@@ -20,11 +20,19 @@ import java.util.Scanner;
 
 public class main {
 
+	/**
+	 * Liste de toutes les pièces contenues dans le XML
+	 */
     final static List<Piece> listPieces = new ArrayList<>();
+    
+    /**
+     * Liste de toutes les pièces au format XML pour modifier leur attribut
+     */
     final static List<Element> listNodesPieces = new ArrayList<>();
 
     public static void main(String[] args) {
 
+    	// Récupération du fichier
         System.out.println("Entrez le chemin du fichier à optimiser : ");
         Scanner sc = new Scanner(System.in);
         String fileName = sc.nextLine();
@@ -36,6 +44,7 @@ public class main {
             System.exit(1);
         }
 
+        // Affichage du fichier avant optimisation
         JFrame f = new JFrame("Affichage pré-optimisation");
         AffichageSVG app = new AffichageSVG(f);
 
@@ -59,8 +68,7 @@ public class main {
 		}
 		*/
 
-        moveTo(listNodesPieces.get(3), new Point(500000, 1000));
-
+        // Affichage après l'optimisation, ouverture d'une nouvelle fenêtre
         try {
             affichageOpti(fileName, doc);
         } catch (Exception e) {
@@ -68,16 +76,24 @@ public class main {
         }
     }
 
+    /**
+     * Méthode récursive pour parcourir le XML et la création de l'ensemble des pièces présentes dans les 
+     * types "path" en sauvegardant la valeur "transform" des Node parents si il y en a
+     * @param coordParent Les coordonnées transformées du parent
+     * @param node Le node à tester
+     */
     private static void creationPieces(Point coordParent, Node node) {
         if (node.getNodeName().equals("g")) {
             Node tmp = node.getAttributes().getNamedItem("transform");
             if (tmp != null) {
+            	// Si il y a un transform, le sauvegarder pour la prochaine récursivité
                 String valeurs = tmp.getNodeValue().replaceAll("[^0-9,.-]+", "");
                 String[] tabValeurs = valeurs.split(",");
                 coordParent.addX(Double.parseDouble(tabValeurs[0]));
                 coordParent.addY(Double.parseDouble(tabValeurs[1]));
             }
         } else if (node.getNodeName().equals("path")) {
+        	// Ajout dans les deux listes
             listNodesPieces.add((Element) node);
             listPieces.add(new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue()));
         }
@@ -90,6 +106,11 @@ public class main {
         }
     }
 
+    /**
+     * Création du fichier XML à traiter avec les Node
+     * @param file Le fichier à lire
+     * @return Document XML prêt à être traité
+     */
     private static Document createXML(File file) {
         DocumentBuilderFactory dbf;
         DocumentBuilder db;
@@ -151,8 +172,13 @@ public class main {
         return node;
     }
 
-    private static void movePiece(Piece listPiece, Point point) {
-        final int index = listPieces.indexOf(listPiece);
+    /**
+     * Bouge la pièce avec une translation contenue dans point
+     * @param listPiece
+     * @param point
+     */
+    private static void movePiece(Piece piece, Point point) {
+        final int index = listPieces.indexOf(piece);
         if (index >= 0) {
             Element e = listNodesPieces.get(index);
             if (e != null) {
@@ -205,10 +231,22 @@ public class main {
                 ((piece.getDiagonale().getB().y - piece.getDiagonale().getA().y) <= height);
     }
 
+    /**
+     * Ajoute l'argument transform="translate(.,.) avec les coordonnées du point a
+     * @param n l'élément à modifier du XML
+     * @param a les coordonnées pour la translation
+     */
     private static void moveTo(Element n, Point a) {
         n.setAttribute("transform", "translate(" + a.getX() + "," + a.getY() + ")");
     }
 
+    /**
+     * Second affichage post optimisation. Traduction d'un fichier XML vers un File, puis affichage
+     * @param fileName nom du fichier de base
+     * @param doc documentXML
+     * @throws IOException
+     * @throws TransformerException
+     */
     private static void affichageOpti(String fileName, Document doc) throws IOException, TransformerException {
         DOMSource source = new DOMSource(doc);
         FileWriter writer;
