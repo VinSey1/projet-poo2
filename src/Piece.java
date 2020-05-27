@@ -6,17 +6,56 @@ public class Piece {
 	double hautGauche[] = new double[2];
 	double basDroit[] = new double[2];;
 	
-	public Piece(double pos[], String trace) {
-		
+	public Piece(double coordParent[], String trace) {
+		double coordActuelle[] = coordParent;		
 		String[] d = trace.split(" ");
+		double maxX = coordParent[0];
+		double maxY = coordParent[1];
+		double minX = coordParent[0];
+		double minY = coordParent[1];
 		for(int i = 0; i<d.length; i++) {
-			if(d[i].equals("M") || d[i].equals("m")) {
-				
-			}
-			String[] tmpString = d[i].split(",");
-			if(tmpString.length == 2) {
-				double tmp1 = Double.parseDouble(tmpString[0]);
-				double tmp2 = Double.parseDouble(tmpString[1]);
+			if(!d[i].replaceAll("[^0-9,.-e]", "").equals("")) {
+				String[] tmpString = d[i].split(",");
+				coordActuelle[0] += Double.parseDouble(tmpString[0]);
+				coordActuelle[1] += Double.parseDouble(tmpString[1]);
+				if(coordActuelle[0] > maxX) maxX = coordActuelle[0];
+				if(coordActuelle[1] > maxY) maxY = coordActuelle[1];
+				if(coordActuelle[0] < minX) minX = coordActuelle[0];
+				if(coordActuelle[1] < minY) minY = coordActuelle[1];
+			} else {
+				if(d[i].matches("[hH]")) {
+					coordActuelle[0] += Double.parseDouble(d[i+1].split(",")[0]);
+					i++;
+				}
+				if(d[i].matches("[vV]")) {
+					coordActuelle[1] += Double.parseDouble(d[i+1].split(",")[0]);
+					i++;
+				}
+				if(d[i].matches("[zZ]")) {
+					// car Z "reset" la coordonnée
+					coordActuelle = coordParent;
+				}
+				if(d[i].matches("[qQcCTS]")) {
+					double traceBezier[] = new double[10];
+					if(d[i].matches("[q]")) {
+						traceBezier = calculTraceBezier(
+								coordActuelle[0] + Double.parseDouble(d[i+1].split(",")[0]),
+								coordActuelle[1] + Double.parseDouble(d[i+1].split(",")[1]),
+								Double.parseDouble(d[i+2].split(",")[0]),
+								Double.parseDouble(d[i+2].split(",")[1]));
+					}
+					if(d[i].matches("[Q]")) {
+						traceBezier = calculTraceBezier(
+								coordParent[0] + Double.parseDouble(d[i+1].split(",")[0]),
+								coordParent[1] + Double.parseDouble(d[i+1].split(",")[1]),
+								Double.parseDouble(d[i+2].split(",")[0]),
+								Double.parseDouble(d[i+2].split(",")[1]));
+					}
+					if(d[i].matches("[cCTS]")) {
+						// Je ne vois pas comment le traiter
+					}
+					// Trouver le minimum des points du tableau traceBezier
+				}
 			}
 		}
 	}

@@ -27,18 +27,18 @@ public class main {
 			System.exit(1);
 		}
 
-		Document doc = createXML(file);
-		
-		tabPieces = new Piece[doc.getElementsByTagName("path").getLength()];
-
-		creationPieces(0, new double[2], doc.getDocumentElement());
-		
         JFrame f = new JFrame("Affichage pré-optimisation");
         AffichageSVG app = new AffichageSVG(f);
 
         f.getContentPane().add(app.afficherFichier(file));
 
         f.setVisible(true);
+        
+		Document doc = createXML(file);
+		
+		tabPieces = new Piece[doc.getElementsByTagName("path").getLength()];
+
+		creationPieces(0, new double[2], doc.getDocumentElement());
 	}
 
 	private static void creationPieces(int i, double[] coordParent, Node node) {
