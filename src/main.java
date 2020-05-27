@@ -1,17 +1,18 @@
 import java.io.File;
 import java.util.Scanner;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class main {
-
 	public static void main(String[] args) {
 
-		System.out.println("Entrez le chemin du fichier √† optimiser : ");
+		System.out.println("Entrez le chemin du fichier ‡ optimiser : ");
 		Scanner sc = new Scanner(System.in);
 		String fileName = sc.nextLine();
 		sc.close();
@@ -25,9 +26,23 @@ public class main {
 		Document doc = createXML(file);
 		NodeList objList = doc.getElementsByTagName("path");
 		System.out.println("Nombre d'objets : " + objList.getLength());
+		
+		Piece tabPieces[] = new Piece[objList.getLength()];
 
-		// Afficher la fen√™tre du fichier de base
-		// R√©cup√©rer les coordonn√©es de chacun des objets
+		for(int i = 0; i < objList.getLength(); i++){
+			Element tmp = (Element) objList.item(i);
+			tabPieces[i] = new Piece(tmp.getAttribute("d").toString());
+		}
+		
+        JFrame f = new JFrame("Affichage prÈ-optimisation");
+        AffichageSVG app = new AffichageSVG(f);
+
+        f.getContentPane().add(app.afficherFichier(file));
+
+        f.setVisible(true);
+		
+		// RÈcupÈrer les coordonnÈes de chacun des objets
+
 	}
 
 	private static Document createXML(File file) {
