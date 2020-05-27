@@ -52,8 +52,7 @@ public class Piece {
 					coordActuelle.setY(arrivee.getY());
 					i++;
 				}
-				if(d[i].matches("[hH]")) {
-					// Normalement faire distinction entre h et H, mais pas à implémenter
+				if(d[i].matches("[h]")) {
 					Point arrivee = new Point(
 							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
 							coordActuelle.getY());
@@ -61,11 +60,26 @@ public class Piece {
 					coordActuelle.setX(arrivee.getX());
 					i++;
 				}
-				if(d[i].matches("[vV]")) {
-					// Normalement faire distinction entre v et V, mais pas à implémenter
+				if(d[i].matches("[H]")) {
 					Point arrivee = new Point(
-						coordActuelle.getX(),
-						coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[0]));
+							coordParent.getX() + Double.parseDouble(d[i+1].split(",")[0]),
+							coordParent.getY());
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
+					coordActuelle.setX(arrivee.getX());
+					i++;
+				}
+				if(d[i].matches("[v]")) {
+					Point arrivee = new Point(
+							coordActuelle.getX(),
+							coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[0]));
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
+					coordActuelle.setY(arrivee.getY());
+					i++;
+				}
+				if(d[i].matches("[V]")) {
+					Point arrivee = new Point(
+							coordParent.getX(),
+							coordParent.getY() + Double.parseDouble(d[i+1].split(",")[0]));
 					tracesPiece.add(new Trace(coordActuelle, arrivee));
 					coordActuelle.setY(arrivee.getY());
 					i++;
