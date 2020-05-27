@@ -22,6 +22,16 @@ public class Piece {
 				coordActuelle.setX(arrivee.getX());
 				coordActuelle.setY(arrivee.getY());
 			} else {
+				if(d[i].matches("[m]")) {
+					coordActuelle.addX(Double.parseDouble(d[i+1].split(",")[0]));
+					coordActuelle.addY(Double.parseDouble(d[i+1].split(",")[1]));
+					i++;
+				}
+				if(d[i].matches("[M]")) {
+					coordActuelle.setX(coordParent.getX() + Double.parseDouble(d[i+1].split(",")[0]));
+					coordActuelle.setY(coordParent.getY() + Double.parseDouble(d[i+1].split(",")[1]));
+					i++;
+				}
 				if(d[i].matches("[l]")) {
 					Point arrivee = new Point(
 							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
@@ -43,6 +53,7 @@ public class Piece {
 					i++;
 				}
 				if(d[i].matches("[hH]")) {
+					// Normalement faire distinction entre h et H, mais pas à implémenter
 					Point arrivee = new Point(
 							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
 							coordActuelle.getY());
@@ -51,6 +62,7 @@ public class Piece {
 					i++;
 				}
 				if(d[i].matches("[vV]")) {
+					// Normalement faire distinction entre v et V, mais pas à implémenter
 					Point arrivee = new Point(
 						coordActuelle.getX(),
 						coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[0]));
@@ -68,10 +80,10 @@ public class Piece {
 					if(d[i].matches("[C]")) {
 						traceBezier = calculCubicTraceBezier(
 								coordParent,
-								coordParent.getX() + Double.parseDouble(d[i+1].split(",")[0]),
-								coordParent.getY() + Double.parseDouble(d[i+1].split(",")[1]),
-								coordParent.getX() + Double.parseDouble(d[i+2].split(",")[0]),
-								coordParent.getY() + Double.parseDouble(d[i+2].split(",")[1]));
+								Double.parseDouble(d[i+1].split(",")[0]),
+								Double.parseDouble(d[i+1].split(",")[1]),
+								Double.parseDouble(d[i+2].split(",")[0]),
+								Double.parseDouble(d[i+2].split(",")[1]));
 						traceBezier[9] = new Point(
 								coordParent.getX() + Double.parseDouble(d[i+3].split(",")[0]),
 								coordParent.getY() + Double.parseDouble(d[i+3].split(",")[1]));
@@ -80,10 +92,10 @@ public class Piece {
 					if(d[i].matches("[c]")) {
 						traceBezier = calculCubicTraceBezier(
 								coordActuelle,
-								coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
-								coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[1]),
-								coordActuelle.getX() + Double.parseDouble(d[i+2].split(",")[0]),
-								coordActuelle.getY() + Double.parseDouble(d[i+2].split(",")[1]));
+								Double.parseDouble(d[i+1].split(",")[0]),
+								Double.parseDouble(d[i+1].split(",")[1]),
+								Double.parseDouble(d[i+2].split(",")[0]),
+								Double.parseDouble(d[i+2].split(",")[1]));
 						traceBezier[9] = new Point(
 								coordActuelle.getX() + Double.parseDouble(d[i+3].split(",")[0]),
 								coordActuelle.getY() + Double.parseDouble(d[i+3].split(",")[1]));
@@ -94,16 +106,15 @@ public class Piece {
 					for(int k = 1; k < traceBezier.length-1; k++) {
 						tracesPiece.add(new Trace(traceBezier[k], traceBezier[k+1]));
 					}
-					
+										
 					coordActuelle = traceBezier[9];
 
-					// Faire les fonctions restantes
 					// Faire l'optimisation en rajoutant un attribut "translate" à chaque path
 					// Prendre en compte les groupes de paths
 					// Afficher l'optimisation
 				}
 				if(d[i].matches("[qQtTsS]")) {
-						// Je ne vois pas comment le traiter
+						// On ne traite pas ces cas là
 				}
 			}
 		}
@@ -116,7 +127,7 @@ public class Piece {
 					3*Math.pow(1-i, 2)*i*p1 +
 					3*(1-i)*Math.pow(i, 2)*p2 +
 					Math.pow(i, 3)*p3;
-			result[i] = new Point(start.getX() + i, y);
+			result[i] = new Point(start.getX() + i, start.getY() + y);
 		}
 		return result;
 	}
