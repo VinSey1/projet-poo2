@@ -14,7 +14,7 @@ public class Piece {
 		double minX = coordParent[0];
 		double minY = coordParent[1];
 		for(int i = 0; i<d.length; i++) {
-			if(!d[i].replaceAll("[^0-9,.-e]", "").equals("")) {
+			if(!d[i].replaceAll("[^0-9,.-]", "").equals("")) {
 				String[] tmpString = d[i].split(",");
 				coordActuelle[0] += Double.parseDouble(tmpString[0]);
 				coordActuelle[1] += Double.parseDouble(tmpString[1]);
