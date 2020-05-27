@@ -17,9 +17,9 @@ public class main {
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
-		Scanner sc = new Scanner(System.in);
-		String fileName = sc.nextLine();
-		sc.close();
+		//Scanner sc = new Scanner(System.in);
+		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_simple.svg";
+		//sc.close();
 		File file = new File(fileName);
 
 		if (!file.exists()) {
@@ -38,17 +38,17 @@ public class main {
 		
 		tabPieces = new Piece[doc.getElementsByTagName("path").getLength()];
 
-		creationPieces(0, new double[2], doc.getDocumentElement());
+		creationPieces(0, new Point(), doc.getDocumentElement());
 	}
 
-	private static void creationPieces(int i, double[] coordParent, Node node) {
+	private static void creationPieces(int i, Point coordParent, Node node) {
 		if(node.getNodeName().equals("g")) {
 			Node tmp = node.getAttributes().getNamedItem("transform");
 			if(tmp != null) {
 				String valeurs = tmp.getNodeValue().replaceAll("[^0-9,.-]+", "");
 				String[] tabValeurs = valeurs.split(",");
-				coordParent[0] += Double.parseDouble(tabValeurs[0]);
-				coordParent[1] += Double.parseDouble(tabValeurs[1]);
+				coordParent.addX(Double.parseDouble(tabValeurs[0]));
+				coordParent.addY(Double.parseDouble(tabValeurs[1]));
 			}
 		} else if (node.getNodeName().equals("path")) {
 			// Maintenant il faut traiter les différentes données, qui sont ajoutées dans chaque pièce
