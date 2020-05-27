@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -6,6 +8,11 @@ import java.util.Scanner;
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,9 +27,9 @@ public class main {
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
-		Scanner sc = new Scanner(System.in);
-		String fileName = sc.nextLine();
-		sc.close();
+		// Scanner sc = new Scanner(System.in);
+		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_simple.svg";
+		// sc.close();
 		File file = new File(fileName);
 
 		if (!file.exists()) {
@@ -41,11 +48,6 @@ public class main {
 		
 		creationPieces(new Point(), doc.getDocumentElement());
 		
-		// Test
-		moveTo(listNodesPieces.get(3), new Point(500000, 1000));
-		app = new AffichageSVG(f);
-        f.getContentPane().add(app.afficherFichier(file));
-        f.setVisible(true);
         
 		optimisation();
 		
@@ -53,6 +55,15 @@ public class main {
 			for(int j = i+1; j<listPieces.size(); j++) {
 				System.out.println("[" + i + ", " + j + "] : " + listPieces.get(i).croise(listPieces.get(j)));
 			}
+		}
+		
+		// Modification de position
+		moveTo(listNodesPieces.get(3), new Point(500000, 1000));
+		
+		try {
+			affichageOpti(fileName, doc);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -99,5 +110,25 @@ public class main {
 	
 	private static void moveTo(Element n, Point a) {
 		n.setAttribute("transform", "translate(" + a.getX() + "," + a.getY() + ")");
+	}
+	
+	private static void affichageOpti(String fileName, Document doc) throws IOException, TransformerException {
+		DOMSource source = new DOMSource(doc);
+	    FileWriter writer;
+		writer = new FileWriter(new File("C:/Users/Vincent/Desktop/POO2/dessin_simpleOpti.svg"));
+	    StreamResult result = new StreamResult(writer);
+	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    Transformer transformer;
+		transformer = transformerFactory.newTransformer();
+		transformer.transform(source, result);
+	    
+	    File file = new File("C:/Users/Vincent/Desktop/POO2/dessin_simpleOpti.svg");
+
+	    JFrame f = new JFrame("Affichage post-optimisation");
+        AffichageSVG app = new AffichageSVG(f);
+
+        f.getContentPane().add(app.afficherFichier(file));
+
+        f.setVisible(true);
 	}
 }
