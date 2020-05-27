@@ -60,8 +60,20 @@ public class Main {
 
         creationPieces(new Point(), doc.getDocumentElement());
 
+        /*
+        Nous avons manifestement un problème avec notre algorithme de collisions, provoquant le non-fonctionnement
+        de l'optimisation (comme illustré par le code ci-dessous).
+
+        // Test des collisions (preuve que ça ne marche pas)
+		for(int i = 0; i<listPieces.size(); i++) {
+			for(int j = i+1; j<listPieces.size(); j++) {
+				System.out.println("[" + i + ", " + j + "] : " + listPieces.get(i).croise(listPieces.get(j)));
+			}
+		}
+
         // Nous allons choisir une profondeur de 6, soit 4^6 = 4096 arbres (grille de 64x64)
         optimisation(TREE_DEPTH, f.getWidth(), f.getHeight());
+         */
 
         // Affichage après l'optimisation, ouverture d'une nouvelle fenêtre
         try {
