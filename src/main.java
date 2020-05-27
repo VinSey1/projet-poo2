@@ -19,9 +19,9 @@ public class main {
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
-		//Scanner sc = new Scanner(System.in);
-		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_complex2.svg";
-		//sc.close();
+		Scanner sc = new Scanner(System.in);
+		String fileName = sc.nextLine();
+		sc.close();
 		File file = new File(fileName);
 
 		if (!file.exists()) {
@@ -39,6 +39,8 @@ public class main {
 		Document doc = createXML(file);
 		
 		creationPieces(new Point(), doc.getDocumentElement());
+		
+		optimisation();
 		
 		for(int i = 0; i<listPieces.size(); i++) {
 			for(int j = i+1; j<listPieces.size(); j++) {
@@ -81,5 +83,9 @@ public class main {
 			e.printStackTrace();
 		}
 		return doc;
+	}
+	
+	private static void optimisation() {
+		
 	}
 }
