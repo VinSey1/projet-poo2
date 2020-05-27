@@ -129,8 +129,8 @@ public class main {
     /**
      * Optimisation du placement des pièces
      *
-     * @param depth La profondeur de l'arbre à utiliser
-     * @param width La largeur de la grille
+     * @param depth  La profondeur de l'arbre à utiliser
+     * @param width  La largeur de la grille
      * @param height La hauteur de la grille
      */
     private static void optimisation(int depth, double width, double height) {
@@ -153,10 +153,10 @@ public class main {
     /**
      * Création d'un quadtree d'une profondeur fixe
      *
-     * @param depth La profondeur
-     * @param x La valeur du noeud en X
-     * @param y La valeur du noeud en Y
-     * @param width La largeur de la grille
+     * @param depth  La profondeur
+     * @param x      La valeur du noeud en X
+     * @param y      La valeur du noeud en Y
+     * @param width  La largeur de la grille
      * @param height La longeur de la grille
      * @return La quadtree créer
      */
@@ -165,10 +165,10 @@ public class main {
         if (depth == 1) {
             return node;
         }
-        node.addChild(createTree(depth - 1, x, y, width, height));
-        node.addChild(createTree(depth - 1, width / 2, y, width, height));
-        node.addChild(createTree(depth - 1, x, height / 2, width, height));
-        node.addChild(createTree(depth - 1, width / 2, height / 2, width, height));
+        node.addChild(createTree(depth - 1, x, y, width / 2, height / 2));
+        node.addChild(createTree(depth - 1, width / 2, y, width / 2, height / 2));
+        node.addChild(createTree(depth - 1, x, height / 2, width / 2, height / 2));
+        node.addChild(createTree(depth - 1, width / 2, height / 2, width / 2, height / 2));
         return node;
     }
 
@@ -190,7 +190,7 @@ public class main {
     /**
      * Trouver le meilleur emplacement d'une pièce dans l'arbre
      *
-     * @param tree L'abre
+     * @param tree  L'abre
      * @param piece La pièce à placer
      * @return L'arbre dans laquelle elle devrait être placer, pouvant être {@literal null}
      */
@@ -221,8 +221,8 @@ public class main {
     /**
      * Vérifier si une pièce satisfait une hauteur et largeur
      *
-     * @param piece La pièce
-     * @param width La largeur
+     * @param piece  La pièce
+     * @param width  La largeur
      * @param height La hauteur
      * @return {@literal true} si la pièce satisfait les conditions
      */
