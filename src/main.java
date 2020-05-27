@@ -105,6 +105,13 @@ public class main {
         return doc;
     }
 
+    /**
+     * Optimisation du placement des pièces
+     *
+     * @param depth La profondeur de l'arbre à utiliser
+     * @param width La largeur de la grille
+     * @param height La hauteur de la grille
+     */
     private static void optimisation(int depth, double width, double height) {
         if (depth < 1)
             throw new UnsupportedOperationException("Depth should be at least one!");
@@ -122,6 +129,16 @@ public class main {
         }
     }
 
+    /**
+     * Création d'un quadtree d'une profondeur fixe
+     *
+     * @param depth La profondeur
+     * @param x La valeur du noeud en X
+     * @param y La valeur du noeud en Y
+     * @param width La largeur de la grille
+     * @param height La longeur de la grille
+     * @return La quadtree créer
+     */
     private static Quadtree<QuadtreePoint> createTree(int depth, double x, double y, double width, double height) {
         Quadtree<QuadtreePoint> node = new Quadtree<>(new QuadtreePoint(x, y, width, height));
         if (depth == 1) {
@@ -144,6 +161,13 @@ public class main {
         }
     }
 
+    /**
+     * Trouver le meilleur emplacement d'une pièce dans l'arbre
+     *
+     * @param tree L'abre
+     * @param piece La pièce à placer
+     * @return L'arbre dans laquelle elle devrait être placer, pouvant être {@literal null}
+     */
     private static Quadtree<QuadtreePoint> findFirstPlace(Quadtree<QuadtreePoint> tree, Piece piece) {
         Quadtree<QuadtreePoint> candidate = null;
         // Si ce quadtree a assez de place pour accueillir la pièce
@@ -168,6 +192,14 @@ public class main {
         }
     }
 
+    /**
+     * Vérifier si une pièce satisfait une hauteur et largeur
+     *
+     * @param piece La pièce
+     * @param width La largeur
+     * @param height La hauteur
+     * @return {@literal true} si la pièce satisfait les conditions
+     */
     private static boolean hasEnoughPlaceForPiece(Piece piece, double width, double height) {
         return ((piece.getDiagonale().getB().x - piece.getDiagonale().getA().x) <= width) &&
                 ((piece.getDiagonale().getB().y - piece.getDiagonale().getA().y) <= height);

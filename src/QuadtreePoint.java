@@ -1,3 +1,6 @@
+/**
+ * Représente un point qui sera élément de notre {@link Quadtree}. Contient une coordonnée x, y ainsi qu'une longueur et une largeur.
+ */
 public class QuadtreePoint {
 
     private final double x, y, longX, longY;
