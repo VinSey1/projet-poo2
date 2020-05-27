@@ -46,7 +46,7 @@ public class AffichageSVG {
         panel.add("Center", svgCanvas);
 
         try {
-            svgCanvas.setURI(file.toURL().toString());
+            svgCanvas.setURI(file.toURI().toURL().toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
