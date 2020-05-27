@@ -2,6 +2,10 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Piece créée à partir de coordonnées d'un fichier SVG
+ *
+ */
 public class Piece {
 
 	/**
