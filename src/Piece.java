@@ -1,17 +1,18 @@
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Piece {
-	
+
 	Point hautGauche = new Point();
 	Point basDroit = new Point();
-	Trace tracesPiece[]; 
-	
+	final List<Trace> tracesPiece = new ArrayList<>();
+
 	public Piece(Point coordParent, String trace) {
 		Point coordActuelle = coordParent;
 		String[] d = trace.split(" ");
 		Point max = new Point(coordParent.getX(), coordParent.getY());
 		Point min = new Point(coordParent.getX(), coordParent.getY());
-		int j = 0;
 		for(int i = 0; i<d.length; i++) {
 			if(!d[i].replaceAll("[^0-9\\,.\\-e]", "").equals("")) {
 				String[] tmpString = d[i].split(",");
@@ -21,8 +22,7 @@ public class Piece {
 				Point arrivee = new Point(
 						coordActuelle.getX() + valeurs.getX(),
 						coordActuelle.getY() + valeurs.getY());
-				tracesPiece[j] = new Trace(coordActuelle, arrivee);
-				j++;
+				tracesPiece.add(new Trace(coordActuelle, arrivee));
 				coordActuelle.addX(valeurs.getX());
 				coordActuelle.addY(valeurs.getY());
 				if(coordActuelle.getX() > max.getX()) max.setX(coordActuelle.getX());
@@ -34,24 +34,21 @@ public class Piece {
 					Point arrivee = new Point(
 							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
 							coordActuelle.getY());
-					tracesPiece[j] = new Trace(coordActuelle, arrivee);
-					j++;
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
 					coordActuelle.setX(arrivee.getX());
 					i++;
 				}
-				if(d[i].matches("[vV]")) {					
+				if(d[i].matches("[vV]")) {
 					Point arrivee = new Point(
 						coordActuelle.getX(),
 						coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[0]));
-					tracesPiece[j] = new Trace(coordActuelle, arrivee);
-					j++;
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
 					coordActuelle.setY(arrivee.getY());
 					i++;
 				}
 				if(d[i].matches("[zZ]")) {
 					// car Z "reset" la coordonnée
-					tracesPiece[j] = new Trace(coordActuelle, coordParent);
-					j++;
+					tracesPiece.add(new Trace(coordActuelle, coordParent));
 					coordActuelle = coordParent;
 				}
 				if(d[i].matches("[qQcCtTsS]")) {
@@ -99,11 +96,11 @@ public class Piece {
 			}
 		}
 	}
-	
+
 	private Point[] calculCubicTraceBezier(Point start, double p0, double p1, double p2, double p3) {
 		Point[] result = new Point[10];
 		for(int i = 0; i < result.length-1; i++) {
-			double y = Math.pow(1-i, 3)*p0 + 
+			double y = Math.pow(1-i, 3)*p0 +
 					3*Math.pow(1-i, 2)*i*p1 +
 					3*(1-i)*Math.pow(i, 2)*p2 +
 					Math.pow(i, 3)*p3;
@@ -111,7 +108,7 @@ public class Piece {
 		}
 		return result;
 	}
-	
+
 	private Point getMin(Point[] tab) {
 		Point result = tab[0];
 		for(int i = 1; i<tab.length; i++) {
@@ -120,7 +117,7 @@ public class Piece {
 		}
 		return result;
 	}
-	
+
 	private Point getMax(Point[] tab) {
 		Point result = tab[0];
 		for(int i = 1; i<tab.length; i++) {
