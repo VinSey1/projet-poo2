@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -11,14 +13,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class main {
-	
-	static Piece tabPieces[];
+		
+	final static List<Piece> listPieces = new ArrayList<>();
 	
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
 		//Scanner sc = new Scanner(System.in);
-		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_simple.svg";
+		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_complex2.svg";
 		//sc.close();
 		File file = new File(fileName);
 
@@ -36,12 +38,16 @@ public class main {
         
 		Document doc = createXML(file);
 		
-		tabPieces = new Piece[doc.getElementsByTagName("path").getLength()];
-
-		creationPieces(0, new Point(), doc.getDocumentElement());
+		creationPieces(new Point(), doc.getDocumentElement());
+		
+		for(int i = 0; i<listPieces.size(); i++) {
+			for(int j = i+1; j<listPieces.size(); j++) {
+				System.out.println("[" + i + ", " + j + "] : " + listPieces.get(i).croise(listPieces.get(j)));
+			}
+		}
 	}
 
-	private static void creationPieces(int i, Point coordParent, Node node) {
+	private static void creationPieces(Point coordParent, Node node) {
 		if(node.getNodeName().equals("g")) {
 			Node tmp = node.getAttributes().getNamedItem("transform");
 			if(tmp != null) {
@@ -51,15 +57,13 @@ public class main {
 				coordParent.addY(Double.parseDouble(tabValeurs[1]));
 			}
 		} else if (node.getNodeName().equals("path")) {
-			// Maintenant il faut traiter les différentes données, qui sont ajoutées dans chaque pièce
-        	tabPieces[i] = new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue());
-        	i++;
+			listPieces.add(new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue()));
 		}
 	    NodeList nodeList = node.getChildNodes();
 	    for (int j = 0; j < nodeList.getLength(); j++) {
 	        Node currentNode = nodeList.item(j);
 	        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	        	creationPieces(i, coordParent, currentNode);
+	        	creationPieces(coordParent, currentNode);
 	        }
 	    }
 	}

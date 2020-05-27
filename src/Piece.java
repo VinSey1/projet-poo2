@@ -4,15 +4,11 @@ import java.util.List;
 
 public class Piece {
 
-	Point hautGauche = new Point();
-	Point basDroit = new Point();
 	final List<Trace> tracesPiece = new ArrayList<>();
 
 	public Piece(Point coordParent, String trace) {
 		Point coordActuelle = coordParent;
 		String[] d = trace.split(" ");
-		Point max = new Point(coordParent.getX(), coordParent.getY());
-		Point min = new Point(coordParent.getX(), coordParent.getY());
 		for(int i = 0; i<d.length; i++) {
 			if(!d[i].replaceAll("[^0-9\\,.\\-e]", "").equals("")) {
 				String[] tmpString = d[i].split(",");
@@ -25,10 +21,6 @@ public class Piece {
 				tracesPiece.add(new Trace(coordActuelle, arrivee));
 				coordActuelle.addX(valeurs.getX());
 				coordActuelle.addY(valeurs.getY());
-				if(coordActuelle.getX() > max.getX()) max.setX(coordActuelle.getX());
-				if(coordActuelle.getY() > max.getY()) max.setY(coordActuelle.getY());
-				if(coordActuelle.getX() < min.getX()) min.setX(coordActuelle.getX());
-				if(coordActuelle.getY() < min.getY()) min.setY(coordActuelle.getY());
 			} else {
 				if(d[i].matches("[hH]")) {
 					Point arrivee = new Point(
@@ -80,10 +72,6 @@ public class Piece {
 					
 					Point maxTrace = getMax(traceBezier);
 					Point minTrace = getMin(traceBezier);
-					if(maxTrace.getX() > max.getX()) max.setX(maxTrace.getX());
-					if(maxTrace.getY() > max.getY()) max.setY(maxTrace.getY());
-					if(minTrace.getX() > min.getX()) min.setX(minTrace.getX());
-					if(minTrace.getY() > min.getY()) min.setY(minTrace.getY());
 					
 					tracesPiece.add(new Trace(coordActuelle, traceBezier[0]));
 					for(int k = 1; k < traceBezier.length-1; k++) {
@@ -93,7 +81,6 @@ public class Piece {
 					coordActuelle = traceBezier[9];
 
 					// Faire les fonctions restantes
-					// Sauvegarder toutes les fonctions de tracé dans une variable pour détecter les collisions
 					// Faire l'optimisation en rajoutant un attribut "translate" à chaque path
 					// Prendre en compte les groupes de paths
 					// Afficher l'optimisation
@@ -133,5 +120,18 @@ public class Piece {
 			if(tab[i].getY() > result.getY()) result.setY(tab[i].getY());
 		}
 		return result;
+	}
+	
+	public boolean croise(Piece a) {
+		for(int i = 0; i<this.tracesPiece.size(); i++) {
+			for(int j = 0; j<a.getTracesPiece().size(); j++) {
+				if(tracesPiece.get(i).croiseTrace(a.getTracesPiece().get(j))) return false;
+			}
+		}
+		return true;
+	}
+
+	public List<Trace> getTracesPiece() {
+		return tracesPiece;
 	}
 }
