@@ -18,21 +18,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class main {
+public class Main {
 
-	/**
-	 * Liste de toutes les pièces contenues dans le XML
-	 */
+    /**
+     * Liste de toutes les pièces contenues dans le XML
+     */
     final static List<Piece> listPieces = new ArrayList<>();
-    
     /**
      * Liste de toutes les pièces au format XML pour modifier leur attribut
      */
     final static List<Element> listNodesPieces = new ArrayList<>();
+    /**
+     * Définit la profondeur du quadtree utiliser pour le placement optimal des objets. Plus la profondeur est grande,
+     * meilleur est la précision mais plus le cout en performances est important.
+     */
+    private static final int TREE_DEPTH = 6;
 
     public static void main(String[] args) {
 
-    	// Récupération du fichier
+        // Récupération du fichier
         System.out.println("Entrez le chemin du fichier à optimiser : ");
         Scanner sc = new Scanner(System.in);
         String fileName = sc.nextLine();
@@ -57,16 +61,7 @@ public class main {
         creationPieces(new Point(), doc.getDocumentElement());
 
         // Nous allons choisir une profondeur de 6, soit 4^6 = 4096 arbres (grille de 64x64)
-        optimisation(6, f.getWidth(), f.getHeight());
-
-        // Test des collisions (preuve que ça ne marche pas)
-		/*
-		for(int i = 0; i<listPieces.size(); i++) {
-			for(int j = i+1; j<listPieces.size(); j++) {
-				System.out.println("[" + i + ", " + j + "] : " + listPieces.get(i).croise(listPieces.get(j)));
-			}
-		}
-		*/
+        optimisation(TREE_DEPTH, f.getWidth(), f.getHeight());
 
         // Affichage après l'optimisation, ouverture d'une nouvelle fenêtre
         try {
@@ -77,23 +72,24 @@ public class main {
     }
 
     /**
-     * Méthode récursive pour parcourir le XML et la création de l'ensemble des pièces présentes dans les 
+     * Méthode récursive pour parcourir le XML et la création de l'ensemble des pièces présentes dans les
      * types "path" en sauvegardant la valeur "transform" des Node parents si il y en a
+     *
      * @param coordParent Les coordonnées transformées du parent
-     * @param node Le node à tester
+     * @param node        Le node à tester
      */
     private static void creationPieces(Point coordParent, Node node) {
         if (node.getNodeName().equals("g")) {
             Node tmp = node.getAttributes().getNamedItem("transform");
             if (tmp != null) {
-            	// Si il y a un transform, le sauvegarder pour la prochaine récursivité
+                // Si il y a un transform, le sauvegarder pour la prochaine récursivité
                 String valeurs = tmp.getNodeValue().replaceAll("[^0-9,.-]+", "");
                 String[] tabValeurs = valeurs.split(",");
                 coordParent.addX(Double.parseDouble(tabValeurs[0]));
                 coordParent.addY(Double.parseDouble(tabValeurs[1]));
             }
         } else if (node.getNodeName().equals("path")) {
-        	// Ajout dans les deux listes
+            // Ajout dans les deux listes
             listNodesPieces.add((Element) node);
             listPieces.add(new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue()));
         }
@@ -108,6 +104,7 @@ public class main {
 
     /**
      * Création du fichier XML à traiter avec les Node
+     *
      * @param file Le fichier à lire
      * @return Document XML prêt à être traité
      */
@@ -174,7 +171,8 @@ public class main {
 
     /**
      * Bouge la pièce avec une translation contenue dans point
-     * @param listPiece
+     *
+     * @param piece
      * @param point
      */
     private static void movePiece(Piece piece, Point point) {
@@ -233,6 +231,7 @@ public class main {
 
     /**
      * Ajoute l'argument transform="translate(.,.) avec les coordonnées du point a
+     *
      * @param n l'élément à modifier du XML
      * @param a les coordonnées pour la translation
      */
@@ -242,8 +241,9 @@ public class main {
 
     /**
      * Second affichage post optimisation. Traduction d'un fichier XML vers un File, puis affichage
+     *
      * @param fileName nom du fichier de base
-     * @param doc documentXML
+     * @param doc      documentXML
      * @throws IOException
      * @throws TransformerException
      */

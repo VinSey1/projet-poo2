@@ -14,7 +14,7 @@ public class Quadtree<V> {
     /**
      * La valeur sur le noeud
      */
-    private V value;
+    private final V value;
 
     public Quadtree(final V value, final List<Quadtree<V>> childs) {
         if (childs != null && childs.size() > 4)
