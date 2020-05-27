@@ -4,33 +4,54 @@ public class Piece {
 	
 	Point hautGauche = new Point();
 	Point basDroit = new Point();
+	Trace tracesPiece[]; 
 	
 	public Piece(Point coordParent, String trace) {
 		Point coordActuelle = coordParent;
 		String[] d = trace.split(" ");
 		Point max = new Point(coordParent.getX(), coordParent.getY());
 		Point min = new Point(coordParent.getX(), coordParent.getY());
+		int j = 0;
 		for(int i = 0; i<d.length; i++) {
 			if(!d[i].replaceAll("[^0-9\\,.\\-e]", "").equals("")) {
-				System.out.println(d[i]);
 				String[] tmpString = d[i].split(",");
-				coordActuelle.addX(Double.parseDouble(tmpString[0]));
-				coordActuelle.addY(Double.parseDouble(tmpString[1]));
+				Point valeurs = new Point(
+						Double.parseDouble(tmpString[0]),
+						Double.parseDouble(tmpString[1]));
+				Point arrivee = new Point(
+						coordActuelle.getX() + valeurs.getX(),
+						coordActuelle.getY() + valeurs.getY());
+				tracesPiece[j] = new Trace(coordActuelle, arrivee);
+				j++;
+				coordActuelle.addX(valeurs.getX());
+				coordActuelle.addY(valeurs.getY());
 				if(coordActuelle.getX() > max.getX()) max.setX(coordActuelle.getX());
 				if(coordActuelle.getY() > max.getY()) max.setY(coordActuelle.getY());
 				if(coordActuelle.getX() < min.getX()) min.setX(coordActuelle.getX());
 				if(coordActuelle.getY() < min.getY()) min.setY(coordActuelle.getY());
 			} else {
 				if(d[i].matches("[hH]")) {
-					coordActuelle.addX(Double.parseDouble(d[i+1].split(",")[0]));
+					Point arrivee = new Point(
+							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
+							coordActuelle.getY());
+					tracesPiece[j] = new Trace(coordActuelle, arrivee);
+					j++;
+					coordActuelle.setX(arrivee.getX());
 					i++;
 				}
-				if(d[i].matches("[vV]")) {
-					coordActuelle.addY(Double.parseDouble(d[i+1].split(",")[0]));
+				if(d[i].matches("[vV]")) {					
+					Point arrivee = new Point(
+						coordActuelle.getX(),
+						coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[0]));
+					tracesPiece[j] = new Trace(coordActuelle, arrivee);
+					j++;
+					coordActuelle.setY(arrivee.getY());
 					i++;
 				}
 				if(d[i].matches("[zZ]")) {
 					// car Z "reset" la coordonnée
+					tracesPiece[j] = new Trace(coordActuelle, coordParent);
+					j++;
 					coordActuelle = coordParent;
 				}
 				if(d[i].matches("[qQcCtTsS]")) {
