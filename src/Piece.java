@@ -122,10 +122,6 @@ public class Piece {
 					}
 										
 					coordActuelle = traceBezier[9];
-
-					// Faire l'optimisation en rajoutant un attribut "translate" à chaque path
-					// Prendre en compte les groupes de paths
-					// Afficher l'optimisation
 				}
 				if(d[i].matches("[qQtTsS]")) {
 						// On ne traite pas ces cas là

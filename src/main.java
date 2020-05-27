@@ -27,9 +27,9 @@ public class main {
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
-		// Scanner sc = new Scanner(System.in);
-		String fileName = "C:/Users/Vincent/Desktop/POO2/dessin_simple.svg";
-		// sc.close();
+		Scanner sc = new Scanner(System.in);
+		String fileName = sc.nextLine();
+		sc.close();
 		File file = new File(fileName);
 
 		if (!file.exists()) {
@@ -48,16 +48,17 @@ public class main {
 		
 		creationPieces(new Point(), doc.getDocumentElement());
 		
-        
 		optimisation();
 		
+		// Test des collisions (preuve que ça ne marche pas)
+		/*
 		for(int i = 0; i<listPieces.size(); i++) {
 			for(int j = i+1; j<listPieces.size(); j++) {
 				System.out.println("[" + i + ", " + j + "] : " + listPieces.get(i).croise(listPieces.get(j)));
 			}
 		}
+		*/
 		
-		// Modification de position
 		moveTo(listNodesPieces.get(3), new Point(500000, 1000));
 		
 		try {
@@ -115,14 +116,16 @@ public class main {
 	private static void affichageOpti(String fileName, Document doc) throws IOException, TransformerException {
 		DOMSource source = new DOMSource(doc);
 	    FileWriter writer;
-		writer = new FileWriter(new File("C:/Users/Vincent/Desktop/POO2/dessin_simpleOpti.svg"));
+	    fileName = fileName.replace(".svg", "_opti.svg");
+		writer = new FileWriter(new File(fileName));
 	    StreamResult result = new StreamResult(writer);
 	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	    Transformer transformer;
 		transformer = transformerFactory.newTransformer();
 		transformer.transform(source, result);
 	    
-	    File file = new File("C:/Users/Vincent/Desktop/POO2/dessin_simpleOpti.svg");
+		System.out.println("Fichier sortie : " + fileName);
+	    File file = new File(fileName);
 
 	    JFrame f = new JFrame("Affichage post-optimisation");
         AffichageSVG app = new AffichageSVG(f);
