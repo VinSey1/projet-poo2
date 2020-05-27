@@ -51,7 +51,7 @@ public class Piece {
 					tracesPiece.add(new Trace(coordActuelle, coordParent));
 					coordActuelle = coordParent;
 				}
-				if(d[i].matches("[qQcCtTsS]")) {
+				if(d[i].matches("[cC]")) {
 					Point traceBezier[] = new Point[10];
 					if(d[i].matches("[C]")) {
 						traceBezier = calculCubicTraceBezier(
@@ -77,21 +77,29 @@ public class Piece {
 								coordActuelle.getY() + Double.parseDouble(d[i+3].split(",")[1]));
 						i = i+3;
 					}
-					if(d[i].matches("[qQtTsS]")) {
-						// Je ne vois pas comment le traiter
-					}
+					
 					Point maxTrace = getMax(traceBezier);
 					Point minTrace = getMin(traceBezier);
 					if(maxTrace.getX() > max.getX()) max.setX(maxTrace.getX());
 					if(maxTrace.getY() > max.getY()) max.setY(maxTrace.getY());
 					if(minTrace.getX() > min.getX()) min.setX(minTrace.getX());
 					if(minTrace.getY() > min.getY()) min.setY(minTrace.getY());
+					
+					tracesPiece.add(new Trace(coordActuelle, traceBezier[0]));
+					for(int k = 1; k < traceBezier.length-1; k++) {
+						tracesPiece.add(new Trace(traceBezier[k], traceBezier[k+1]));
+					}
+					
+					coordActuelle = traceBezier[9];
 
 					// Faire les fonctions restantes
 					// Sauvegarder toutes les fonctions de tracé dans une variable pour détecter les collisions
 					// Faire l'optimisation en rajoutant un attribut "translate" à chaque path
 					// Prendre en compte les groupes de paths
 					// Afficher l'optimisation
+				}
+				if(d[i].matches("[qQtTsS]")) {
+						// Je ne vois pas comment le traiter
 				}
 			}
 		}
