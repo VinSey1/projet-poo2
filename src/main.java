@@ -109,8 +109,7 @@ public class main {
         if (depth < 1)
             throw new UnsupportedOperationException("Depth should be at least one!");
         // Creation de la racine du quadtree
-        final Quadtree<QuadtreePoint> root = new Quadtree<>(new QuadtreePoint(0, 0, width, height));
-        createTree(root, depth);
+        final Quadtree<QuadtreePoint> root = createTree(depth, 0, 0, width, height);
         // Trouver la première feuille qui a assez de place
         Quadtree<QuadtreePoint> quadtreePosition;
         for (final Piece listPiece : listPieces) {
@@ -123,11 +122,16 @@ public class main {
         }
     }
 
-    private static <V> void createTree(Quadtree<V> root, int depth) {
-        if (depth < 0)
-            throw new UnsupportedOperationException("The provided depth should be positive.");
-        // Création d'un quadtree de profondeur depth
-        // TODO
+    private static Quadtree<QuadtreePoint> createTree(int depth, double x, double y, double width, double height) {
+        Quadtree<QuadtreePoint> node = new Quadtree<>(new QuadtreePoint(x, y, width, height));
+        if (depth == 1) {
+            return node;
+        }
+        node.addChild(createTree(depth - 1, x, y, width, height));
+        node.addChild(createTree(depth - 1, width / 2, y, width, height));
+        node.addChild(createTree(depth - 1, x, height / 2, width, height));
+        node.addChild(createTree(depth - 1, width / 2, height / 2, width, height));
+        return node;
     }
 
     private static void movePiece(Piece listPiece, Point point) {

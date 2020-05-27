@@ -24,4 +24,8 @@ public class Quadtree<V> {
     public List<Quadtree<V>> getChilds() {
         return childs;
     }
+
+    public void addChild(Quadtree<V> child) {
+        this.childs.add(child);
+    }
 }
