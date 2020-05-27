@@ -35,7 +35,7 @@ public class Piece {
 					// car Z "reset" la coordonnée
 					coordActuelle = coordParent;
 				}
-				if(d[i].matches("[qQcCTS]")) {
+				if(d[i].matches("[qQcCtTsS]")) {
 					double traceBezier[] = new double[10];
 					if(d[i].matches("[q]")) {
 						traceBezier = calculTraceBezier(
@@ -43,6 +43,7 @@ public class Piece {
 								coordActuelle[1] + Double.parseDouble(d[i+1].split(",")[1]),
 								Double.parseDouble(d[i+2].split(",")[0]),
 								Double.parseDouble(d[i+2].split(",")[1]));
+						i = i+2;
 					}
 					if(d[i].matches("[Q]")) {
 						traceBezier = calculTraceBezier(
@@ -50,11 +51,17 @@ public class Piece {
 								coordParent[1] + Double.parseDouble(d[i+1].split(",")[1]),
 								Double.parseDouble(d[i+2].split(",")[0]),
 								Double.parseDouble(d[i+2].split(",")[1]));
+						i = i+2;
 					}
-					if(d[i].matches("[cCTS]")) {
+					if(d[i].matches("[cCtTsS]")) {
 						// Je ne vois pas comment le traiter
 					}
-					// Trouver le minimum des points du tableau traceBezier
+					// Trouver le minimum des points du tableau traceBezier et le max pour maxX/Y minX/Y
+					// Faire les fonctions restantes
+					// Sauvegarder toutes les fonctions de tracé dans une variable pour détecter les collisions
+					// Faire l'optimisation en rajoutant un attribut "translate" à chaque path
+					// Prendre en compte les groupes de paths
+					// Afficher l'optimisation
 				}
 			}
 		}
