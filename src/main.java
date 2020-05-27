@@ -7,9 +7,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class main {
+	
+	static Piece tabPieces[];
+	
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
@@ -24,15 +28,10 @@ public class main {
 		}
 
 		Document doc = createXML(file);
-		NodeList objList = doc.getElementsByTagName("path");
-		System.out.println("Nombre d'objets : " + objList.getLength());
 		
-		Piece tabPieces[] = new Piece[objList.getLength()];
+		tabPieces = new Piece[doc.getElementsByTagName("path").getLength()];
 
-		for(int i = 0; i < objList.getLength(); i++){
-			Element tmp = (Element) objList.item(i);
-			tabPieces[i] = new Piece(tmp.getAttribute("d").toString());
-		}
+		creationPieces(0, new double[2], doc.getDocumentElement());
 		
         JFrame f = new JFrame("Affichage pré-optimisation");
         AffichageSVG app = new AffichageSVG(f);
@@ -40,9 +39,29 @@ public class main {
         f.getContentPane().add(app.afficherFichier(file));
 
         f.setVisible(true);
-		
-		// Récupérer les coordonnées de chacun des objets
+	}
 
+	private static void creationPieces(int i, double[] coordParent, Node node) {
+		if(node.getNodeName().equals("g")) {
+			Node tmp = node.getAttributes().getNamedItem("transform");
+			if(tmp != null) {
+				String valeurs = tmp.getNodeValue().replaceAll("[^0-9,.-]+", "");
+				String[] tabValeurs = valeurs.split(",");
+				coordParent[0] += Double.parseDouble(tabValeurs[0]);
+				coordParent[1] += Double.parseDouble(tabValeurs[1]);
+			}
+		} else if (node.getNodeName().equals("path")) {
+			// Maintenant il faut traiter les différentes données, qui sont ajoutées dans chaque pièce
+        	tabPieces[i] = new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue());
+        	i++;
+		}
+	    NodeList nodeList = node.getChildNodes();
+	    for (int j = 0; j < nodeList.getLength(); j++) {
+	        Node currentNode = nodeList.item(j);
+	        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+	        	creationPieces(i, coordParent, currentNode);
+	        }
+	    }
 	}
 
 	private static Document createXML(File file) {
