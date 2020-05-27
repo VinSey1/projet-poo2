@@ -19,9 +19,29 @@ public class Piece {
 						coordActuelle.getX() + valeurs.getX(),
 						coordActuelle.getY() + valeurs.getY());
 				tracesPiece.add(new Trace(coordActuelle, arrivee));
-				coordActuelle.addX(valeurs.getX());
-				coordActuelle.addY(valeurs.getY());
+				coordActuelle.setX(arrivee.getX());
+				coordActuelle.setY(arrivee.getY());
 			} else {
+				if(d[i].matches("[l]")) {
+					Point arrivee = new Point(
+							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
+							coordActuelle.getY() + Double.parseDouble(d[i+1].split(",")[1])
+							);
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
+					coordActuelle.setX(arrivee.getX());
+					coordActuelle.setY(arrivee.getY());
+					i++;
+				}
+				if(d[i].matches("[L]")) {
+					Point arrivee = new Point(
+							coordParent.getX() + Double.parseDouble(d[i+1].split(",")[0]),
+							coordParent.getY() + Double.parseDouble(d[i+1].split(",")[1])
+							);
+					tracesPiece.add(new Trace(coordActuelle, arrivee));
+					coordActuelle.setX(arrivee.getX());
+					coordActuelle.setY(arrivee.getY());
+					i++;
+				}
 				if(d[i].matches("[hH]")) {
 					Point arrivee = new Point(
 							coordActuelle.getX() + Double.parseDouble(d[i+1].split(",")[0]),
@@ -70,9 +90,6 @@ public class Piece {
 						i = i+3;
 					}
 					
-					Point maxTrace = getMax(traceBezier);
-					Point minTrace = getMin(traceBezier);
-					
 					tracesPiece.add(new Trace(coordActuelle, traceBezier[0]));
 					for(int k = 1; k < traceBezier.length-1; k++) {
 						tracesPiece.add(new Trace(traceBezier[k], traceBezier[k+1]));
@@ -100,24 +117,6 @@ public class Piece {
 					3*(1-i)*Math.pow(i, 2)*p2 +
 					Math.pow(i, 3)*p3;
 			result[i] = new Point(start.getX() + i, y);
-		}
-		return result;
-	}
-
-	private Point getMin(Point[] tab) {
-		Point result = tab[0];
-		for(int i = 1; i<tab.length; i++) {
-			if(tab[i].getX() < result.getX()) result.setX(tab[i].getX());
-			if(tab[i].getY() < result.getY()) result.setY(tab[i].getY());
-		}
-		return result;
-	}
-
-	private Point getMax(Point[] tab) {
-		Point result = tab[0];
-		for(int i = 1; i<tab.length; i++) {
-			if(tab[i].getX() > result.getX()) result.setX(tab[i].getX());
-			if(tab[i].getY() > result.getY()) result.setY(tab[i].getY());
 		}
 		return result;
 	}
