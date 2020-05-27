@@ -5,10 +5,14 @@ import java.util.List;
 public class Piece {
 
 	final List<Trace> tracesPiece = new ArrayList<>();
+	
+	Trace diagonale;
 
 	public Piece(Point coordParent, String trace) {
 		Point coordActuelle = coordParent;
 		String[] d = trace.split(" ");
+		Point max = new Point(coordParent.getX(), coordParent.getY());
+		Point min = new Point(coordParent.getX(), coordParent.getY());
 		for(int i = 0; i<d.length; i++) {
 			if(!d[i].replaceAll("[^0-9\\,.\\-e]", "").equals("")) {
 				String[] tmpString = d[i].split(",");
@@ -122,12 +126,26 @@ public class Piece {
 					}
 										
 					coordActuelle = traceBezier[9];
+					
+					Point maxTrace = getMax(traceBezier);
+					Point minTrace = getMin(traceBezier);
+					
+					if(maxTrace.getX() > max.getX()) max.setX(maxTrace.getX());
+					if(maxTrace.getY() > max.getY()) max.setY(maxTrace.getY());
+					if(minTrace.getX() > min.getX()) min.setX(minTrace.getX());
+					if(minTrace.getY() > min.getY()) min.setY(minTrace.getY());
+				} else {
+					if(coordActuelle.getX() > max.getX()) max.setX(coordActuelle.getX());
+					if(coordActuelle.getY() > max.getY()) max.setY(coordActuelle.getY());
+					if(coordActuelle.getX() < min.getX()) min.setX(coordActuelle.getX());
+					if(coordActuelle.getY() < min.getY()) min.setY(coordActuelle.getY());
 				}
 				if(d[i].matches("[qQtTsS]")) {
 						// On ne traite pas ces cas là
 				}
 			}
 		}
+		diagonale = new Trace(min, max);
 	}
 
 	private Point[] calculCubicTraceBezier(Point start, double p0, double p1, double p2, double p3) {
@@ -138,6 +156,23 @@ public class Piece {
 					3*(1-i)*Math.pow(i, 2)*p2 +
 					Math.pow(i, 3)*p3;
 			result[i] = new Point(start.getX() + i, start.getY() + y);
+		}
+		return result;
+	}
+	
+	private Point getMin(Point[] tab) {
+		Point result = tab[0];
+		for(int i = 1; i<tab.length; i++) {
+			if(tab[i].getX() < result.getX()) result.setX(tab[i].getX());
+			if(tab[i].getY() < result.getY()) result.setY(tab[i].getY());
+		}
+		return result;
+	}
+	private Point getMax(Point[] tab) {
+		Point result = tab[0];
+		for(int i = 1; i<tab.length; i++) {
+			if(tab[i].getX() > result.getX()) result.setX(tab[i].getX());
+			if(tab[i].getY() > result.getY()) result.setY(tab[i].getY());
 		}
 		return result;
 	}
@@ -153,5 +188,9 @@ public class Piece {
 
 	public List<Trace> getTracesPiece() {
 		return tracesPiece;
+	}
+	
+	public Trace getDiagonale() {
+		return diagonale;
 	}
 }
