@@ -279,5 +279,6 @@ public class Main {
         f.getContentPane().add(app.afficherFichier(file));
 
         f.setVisible(true);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
