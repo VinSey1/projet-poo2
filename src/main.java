@@ -15,7 +15,8 @@ import org.w3c.dom.NodeList;
 public class main {
 		
 	final static List<Piece> listPieces = new ArrayList<>();
-	
+	final static List<Element> listNodesPieces = new ArrayList<>();
+
 	public static void main(String[] args) {
 
 		System.out.println("Entrez le chemin du fichier à optimiser : ");
@@ -40,6 +41,12 @@ public class main {
 		
 		creationPieces(new Point(), doc.getDocumentElement());
 		
+		// Test
+		moveTo(listNodesPieces.get(3), new Point(500000, 1000));
+		app = new AffichageSVG(f);
+        f.getContentPane().add(app.afficherFichier(file));
+        f.setVisible(true);
+        
 		optimisation();
 		
 		for(int i = 0; i<listPieces.size(); i++) {
@@ -59,6 +66,7 @@ public class main {
 				coordParent.addY(Double.parseDouble(tabValeurs[1]));
 			}
 		} else if (node.getNodeName().equals("path")) {
+			listNodesPieces.add((Element) node);
 			listPieces.add(new Piece(coordParent, node.getAttributes().getNamedItem("d").getNodeValue()));
 		}
 	    NodeList nodeList = node.getChildNodes();
@@ -87,5 +95,9 @@ public class main {
 	
 	private static void optimisation() {
 		
+	}
+	
+	private static void moveTo(Element n, Point a) {
+		n.setAttribute("transform", "translate(" + a.getX() + "," + a.getY() + ")");
 	}
 }
